@@ -2,7 +2,10 @@ import { storeAudioNextOpening } from "../misc/helper";
 //play audio
 export const play = async (playbackObj, uri) => {
   try {
-    return await playbackObj.loadAsync({ uri: uri }, { shouldPlay: true });
+    return await playbackObj.loadAsync(
+      { uri: uri },
+      { shouldPlay: true, progressUpdateIntervalMillis: 1000 }
+    );
   } catch (error) {
     console.log("error inside play helper method", error.message);
   }
@@ -86,7 +89,11 @@ export const selectAudio = async (audio, context) => {
       console.log("audio is already playing");
       const status = await pause(playbackObj);
       // console.log("this context", this.context);
-      return updateState(context, { soundObj: status, isPlaying: false });
+      return updateState(context, {
+        soundObj: status,
+        isPlaying: false,
+        // playbackPosition: status.positionMillis,
+      });
       // await this.state.playbackObj.setStatusAsync({
       //   shouldPlay: false,
       // });
@@ -117,8 +124,10 @@ export const selectAudio = async (audio, context) => {
     //select another audio
     if (soundObj.isLoaded && currentAudio.id !== audio.id) {
       console.log("selected next audio");
+      // const status = await playNext(playbackObj, audio.url);
+      // const index = audioFiles.indexOf(audio);
       const status = await playNext(playbackObj, audio.url);
-      const index = audioFiles.indexOf(audio);
+      const index = audioFiles.findIndex(({ id }) => id === audio.id);
       updateState(context, {
         currentAudio: audio,
         soundObj: status,
@@ -208,5 +217,24 @@ export const changeAudio = async (context, select) => {
     storeAudioNextOpening(audio, index);
   } catch (error) {
     console.log("error inside change audio method.", error.message);
+  }
+};
+
+export const moveAudio = async (context, value) => {
+  const { soundObj, isPlaying, playbackObj, updateState } = context;
+  if (soundObj === null || !isPlaying) return;
+
+  try {
+    const status = await playbackObj.setPositionAsync(
+      Math.floor(soundObj.durationMillis * value)
+    );
+    updateState(context, {
+      soundObj: status,
+      playbackPosition: status.positionMillis,
+    });
+
+    await resume(playbackObj);
+  } catch (error) {
+    console.log("error inside onSlidingComplete callback", error);
   }
 };

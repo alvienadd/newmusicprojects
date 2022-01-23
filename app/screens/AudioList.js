@@ -208,7 +208,7 @@ export class AudioList extends Component {
                 rowRenderer={this.rowRenderer}
                 extendedState={{ isPlaying }}
               />
-              <OptionModal
+              {/* <OptionModal
                 onPlayPress={() => console.log("Playing Audio")}
                 onPlayListPress={() => {
                   this.context.updateState(this.context, {
@@ -221,7 +221,7 @@ export class AudioList extends Component {
                   this.setState({ ...this.state, optionModalVisible: false })
                 }
                 visible={this.state.optionModalVisible}
-              />
+              /> */}
             </Screen>
           );
         }}

@@ -45,7 +45,7 @@ const { width } = Dimensions.get("window");
 //   }
 // };
 
-const Player = () => {
+const EmptyPlayer = () => {
   const [currentPosition, setCurrentPosition] = useState(0);
   const context = useContext(AudioContext);
   const { playbackPosition, playbackDuration } = context;
@@ -186,69 +186,7 @@ const Player = () => {
 
   return (
     <Screen>
-      <View style={styles.container}>
-        <Text style={styles.audioCount}>
-          {context.currentAudioIndex + 1} / {context.totalAudioCount}
-        </Text>
-        <View style={styles.midBannerContainer}>
-          <MaterialCommunityIcons
-            name="music-circle"
-            size={300}
-            color={context.isPlaying ? color.ACTIVE_BG : color.FONT_MEDIUM}
-          />
-        </View>
-        <View style={styles.audioPlayerContainer}>
-          <Text numberOfLines={1} style={styles.audioTitle}>
-            {context.currentAudio.title}
-          </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              paddingHorizontal: 15,
-            }}
-          >
-            {/* <Text>{convertTime(context.currentAudio.duration)}</Text> */}
-            {/* <Text>
-              {currentPosition ? currentPosition : renderCurrentTime()}
-            </Text> */}
-          </View>
-          {/* <Slider
-            style={{ width: width, height: 40 }}
-            minimumValue={0}
-            maximumValue={1}
-            value={calculateSeekBar()}
-            minimumTrackTintColor={color.FONT_MEDIUM}
-            maximumTrackTintColor={color.ACTIVE_BG}
-            onValueChange={(value) => {
-              // console.log(value);
-              setCurrentPosition(
-                convertTime(value * context.currentAudio.duration)
-              );
-            }}
-            onSlidingStart={async () => {
-              if (!context.isPlaying) return;
-              try {
-                await pause(context.playbackobj);
-              } catch (error) {
-                console.log("error inside onSlidingStart callback", error);
-              }
-            }}
-            onSlidingComplete={async (value) => {
-              await moveAudio(context, value), setCurrentPosition(0);
-            }}
-          /> */}
-          <View style={styles.audioController}>
-            <PlayerButton iconType={"PREV"} onPress={handlePrevious} />
-            <PlayerButton
-              onPress={handlePlayPause}
-              style={{ marginHorizontal: 25 }}
-              iconType={context.isPlaying ? "PLAY" : "PAUSE"}
-            />
-            <PlayerButton iconType={"NEXT"} onPress={handleNext} />
-          </View>
-        </View>
-      </View>
+      <View style={styles.container}></View>
     </Screen>
   );
 };
@@ -282,4 +220,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Player;
+export default EmptyPlayer;

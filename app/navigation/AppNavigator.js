@@ -3,6 +3,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import AudioList from "../screens/AudioList";
 import Player from "../screens/Player";
 import PlayList from "../screens/PlayList";
+import EmptyPlayer from "../screens/EmptyPlayer";
+import EmptyPlayList from "../screens/EmptyPlayList";
 import { MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 
 const Tab = createBottomTabNavigator();
@@ -19,7 +21,7 @@ const AppNavigator = () => {
           ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Player"
         component={Player}
         options={{
@@ -36,7 +38,25 @@ const AppNavigator = () => {
             <MaterialIcons name="library-music" size={size} color={color} />
           ),
         }}
+      /> */}
+      {/* <Tab.Screen
+        name="EmptyPlayer"
+        component={EmptyPlayer}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome5 name="compact-disc" size={size} color={color} />
+          ),
+        }}
       />
+      <Tab.Screen
+        name="EmptyPlayList"
+        component={EmptyPlayList}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="library-music" size={size} color={color} />
+          ),
+        }}
+      /> */}
     </Tab.Navigator>
   );
 };

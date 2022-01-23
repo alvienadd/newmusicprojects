@@ -5,6 +5,7 @@ import AppNavigator from "./app/navigation/AppNavigator";
 import AudioProvider from "./app/context/AudioProvider";
 import AudioListItem from "./app/components/AudioListItem";
 import color from "./app/misc/color";
+import AudioList from "./app/screens/AudioList";
 
 const MyTheme = {
   ...DefaultTheme,
@@ -17,9 +18,10 @@ const MyTheme = {
 export default function App() {
   return (
     <AudioProvider>
-      <NavigationContainer theme={MyTheme}>
+      {/* <NavigationContainer theme={MyTheme}>
         <AppNavigator />
-      </NavigationContainer>
+      </NavigationContainer> */}
+      <AudioList />
     </AudioProvider>
     // <View style={{ marginTop: 50 }}>
     //   <AudioListItem />
