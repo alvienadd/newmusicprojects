@@ -9,7 +9,7 @@ import {
 import { Entypo } from "@expo/vector-icons";
 import color from "../misc/color";
 
-const getThumbnailText = (filename) => filename[0];
+const getThumbnailText = (title) => title[0];
 
 const convertTime = (minutes) => {
   if (minutes) {
@@ -21,9 +21,11 @@ const convertTime = (minutes) => {
     if (parseInt(minute) < 10 && sec < 10) {
       return `0${minute}:0${sec}`;
     }
+
     if (parseInt(minute) < 10) {
       return `0${minute}:${sec}`;
     }
+
     if (sec < 10) {
       return `${minute}:0${sec}`;
     }
@@ -37,7 +39,7 @@ const renderPlayPauseIcon = (isPlaying) => {
     return (
       <Entypo name="controller-paus" size={24} color={color.ACTIVE_FONT} />
     );
-  return <Entypo name="controller-play" size={24} color={color.ACTIVE_FONT} />; //pause icon
+  return <Entypo name="controller-play" size={24} color={color.ACTIVE_FONT} />;
 };
 
 const AudioListItem = ({
@@ -64,8 +66,6 @@ const AudioListItem = ({
               ]}
             >
               <Text style={styles.thumbnailText}>
-                {/* {getThumbnailText(title)} */}
-                {/* {renderPlayPauseIcon(isPlaying)} */}
                 {activeListItem
                   ? renderPlayPauseIcon(isPlaying)
                   : getThumbnailText(title)}
@@ -93,16 +93,12 @@ const AudioListItem = ({
     </>
   );
 };
-
 const { width } = Dimensions.get("window");
-
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignSelf: "center",
-    width: width - 20,
-    // width: width - 80,
-    // backgroundColor: "red",
+    width: width - 80,
   },
   leftContainer: {
     flexDirection: "row",
@@ -114,7 +110,6 @@ const styles = StyleSheet.create({
     height: 50,
     alignItems: "center",
     justifyContent: "center",
-    // backgroundColor: "yellow",
   },
   thumbnail: {
     height: 50,

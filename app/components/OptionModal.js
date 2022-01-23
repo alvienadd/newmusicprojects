@@ -13,6 +13,7 @@ const OptionModal = ({
   visible,
   currentItem,
   onClose,
+  options,
   onPlayPress,
   onPlayListPress,
 }) => {
@@ -22,16 +23,26 @@ const OptionModal = ({
       <StatusBar hidden />
       <Modal animationType="slide" transparent visible={visible}>
         <View style={styles.modal}>
-          <Text numberOfLines={2} style={styles.title}>
+          <Text style={styles.title} numberOfLines={2}>
             {title}
           </Text>
           <View style={styles.optionContainer}>
-            <TouchableWithoutFeedback onPress={onPlayPress}>
+            {options.map((optn) => {
+              return (
+                <TouchableWithoutFeedback
+                  key={optn.title}
+                  onPress={optn.onPress}
+                >
+                  <Text style={styles.option}>{optn.title}</Text>
+                </TouchableWithoutFeedback>
+              );
+            })}
+            {/* <TouchableWithoutFeedback onPress={onPlayPress}>
               <Text style={styles.option}>Play</Text>
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback onPress={onPlayListPress}>
               <Text style={styles.option}>Add to Playlist</Text>
-            </TouchableWithoutFeedback>
+            </TouchableWithoutFeedback> */}
           </View>
         </View>
         <TouchableWithoutFeedback onPress={onClose}>
@@ -73,9 +84,9 @@ const styles = StyleSheet.create({
   modalBg: {
     position: "absolute",
     top: 0,
-    bottom: 0,
     right: 0,
     left: 0,
+    bottom: 0,
     backgroundColor: color.MODAL_BG,
   },
 });

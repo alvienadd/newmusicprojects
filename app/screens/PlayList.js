@@ -1,4 +1,5 @@
-import React, { useContext, useState, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -9,14 +10,12 @@ import {
   Alert,
 } from "react-native";
 import PlayListInputModal from "../components/PlayListInputModal";
-import color from "../misc/color";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AudioContext } from "../context/AudioProvider";
+import color from "../misc/color";
 import PlayListDetail from "../components/PlayListDetail";
 
-let selectedPlayList = [];
-
-const PlayList = () => {
+let selectedPlayList = {};
+const PlayList = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [showPlayList, setShowPlayList] = useState(false);
 
@@ -27,11 +26,9 @@ const PlayList = () => {
     const result = await AsyncStorage.getItem("playlist");
     if (result !== null) {
       const audios = [];
-
       if (addToPlayList) {
         audios.push(addToPlayList);
       }
-
       const newList = {
         id: Date.now(),
         title: playListName,
@@ -40,7 +37,7 @@ const PlayList = () => {
 
       const updatedList = [...playList, newList];
       updateState(context, { addToPlayList: null, playList: updatedList });
-      AsyncStorage.setItem("playlist", JSON.stringify(updatedList));
+      await AsyncStorage.setItem("playlist", JSON.stringify(updatedList));
     }
     setModalVisible(false);
   };
@@ -61,6 +58,7 @@ const PlayList = () => {
         JSON.stringify([...newPlayList])
       );
     }
+
     updateState(context, { playList: JSON.parse(result) });
   };
 
@@ -73,86 +71,89 @@ const PlayList = () => {
   const handleBannerPress = async (playList) => {
     if (addToPlayList) {
       const result = await AsyncStorage.getItem("playlist");
+
       let oldList = [];
       let updatedList = [];
       let sameAudio = false;
 
       if (result !== null) {
         oldList = JSON.parse(result);
-        // console.log(oldList);
+
         updatedList = oldList.filter((list) => {
           if (list.id === playList.id) {
-            //we want to check is thesame audio is already inside our list or not
+            // we want to check is that same audio is already inside our list or not.
             for (let audio of list.audios) {
               if (audio.id === addToPlayList.id) {
-                //alert with some message
+                // alert with some message
                 sameAudio = true;
                 return;
               }
             }
 
-            //otherwise update the playlist
+            // otherwise update the playlist.
             list.audios = [...list.audios, addToPlayList];
           }
 
           return list;
         });
       }
+
       if (sameAudio) {
         Alert.alert(
           "Found same audio!",
-          `${addToPlayList.title}is already inside the list`
+          `${addToPlayList.title} is already inside the list.`
         );
         sameAudio = false;
         return updateState(context, { addToPlayList: null });
       }
+
       updateState(context, { addToPlayList: null, playList: [...updatedList] });
       return AsyncStorage.setItem("playlist", JSON.stringify([...updatedList]));
     }
-    //if there is no audio selected then we want open the list.
-    // console.log("Opening List");
+
+    // if there is no audio selected then we want open the list.
     selectedPlayList = playList;
-    setShowPlayList(true);
+    // setShowPlayList(true);
+    navigation.navigate("PlayListDetail", playList);
   };
 
   return (
-    <>
-      <ScrollView contentContainerStyle={styles.container}>
-        {playList.length
-          ? playList.map((item) => (
-              <TouchableOpacity
-                key={item.id.toString()}
-                style={styles.playListBanner}
-                onPress={() => handleBannerPress(item)}
-              >
-                <Text>{item.title}</Text>
-                <Text style={styles.audioCount}>
-                  {item.audios.length > 1
-                    ? `${item.audios.length} Songs`
-                    : `${item.audios.length} Song`}
-                </Text>
-              </TouchableOpacity>
-            ))
-          : null}
+    <ScrollView contentContainerStyle={styles.container}>
+      {playList.length
+        ? playList.map((item) => (
+            <TouchableOpacity
+              key={item.id.toString()}
+              style={styles.playListBanner}
+              onPress={() => handleBannerPress(item)}
+            >
+              <Text>{item.title}</Text>
+              <Text style={styles.audioCount}>
+                {item.audios.length > 1
+                  ? `${item.audios.length} Songs`
+                  : `${item.audios.length} Song`}
+              </Text>
+            </TouchableOpacity>
+          ))
+        : null}
 
-        <TouchableOpacity
-          onPress={() => setModalVisible(true)}
-          style={{ marginTop: 15 }}
-        >
-          <Text style={styles.playListBtn}>+ Add New Playlist</Text>
-        </TouchableOpacity>
-        <PlayListInputModal
-          visible={modalVisible}
-          onClose={() => setModalVisible(false)}
-          onSubmit={createPlayList}
-        />
-      </ScrollView>
+      <TouchableOpacity
+        onPress={() => setModalVisible(true)}
+        style={{ marginTop: 15 }}
+      >
+        <Text style={styles.playListBtn}>+ Add New Playlist</Text>
+      </TouchableOpacity>
+
+      <PlayListInputModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onSubmit={createPlayList}
+      />
       <PlayListDetail
         visible={showPlayList}
         playList={selectedPlayList}
         onClose={() => setShowPlayList(false)}
       />
-    </>
+    </ScrollView>
   );
 };
 
@@ -164,7 +165,7 @@ const styles = StyleSheet.create({
     padding: 5,
     backgroundColor: "rgba(204,204,204,0.3)",
     borderRadius: 5,
-    marginBottom: 14,
+    marginBottom: 15,
   },
   audioCount: {
     marginTop: 3,
